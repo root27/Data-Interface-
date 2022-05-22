@@ -4,21 +4,30 @@ User Interface for CRUD operations with React and SQL.
 
 # Installation
 First install server packages
-- <shell>npm install</shell>
-    
+'''bash
+- npm install
+'''
+
 Then install client packages
-- <shell>cd client</shell>
-- <shell>npm install</shell>
+'''bash
+
+- cd client
+- npm install
+
+'''
+
 
 # Usage
 Server start;
 
-- <shell>npm start</shell>
-
+'''bash
+- npm start
+'''
 Client start;
 
-- <shell>npm start</shell>
-
+'''bash
+- npm start
+'''
 # Check List
 
 - [X] Authentication with JWT 
