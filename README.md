@@ -4,20 +4,20 @@ User Interface for CRUD operations with React and SQL.
 
 # Installation
 First install server packages
-- <bash>npm install</bash>
+- <shell>npm install</shell>
     
 Then install client packages
-- <bash>cd client</bash>
-- <bash>npm install</bash>
+- <shell>cd client</shell>
+- <shell>npm install</shell>
 
 # Usage
 Server start;
 
-- <bash>npm start</bash>
+- <shell>npm start</shell>
 
 Client start;
 
-- <bash>npm start</bash>
+- <shell>npm start</shell>
 
 # Check List
 
