@@ -6,5 +6,5 @@
 - [X] Update page added
 - [X] Delete added
 - [X] Report generation
-- [] Report generation in English
-- [] Add QR Code section 
+- [ ] Report generation in English
+- [ ] Add QR Code section 
