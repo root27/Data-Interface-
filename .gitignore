@@ -1,0 +1,8 @@
+/node_modules
+
+/reports
+/genedata.js
+.env
+
+/pdf
+/dummy_pdf
