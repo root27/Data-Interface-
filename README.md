@@ -1,5 +1,25 @@
-## Data Interface with React and MY-SQL
+## Data Interface with React and MySQL
 
+User Interface for CRUD operations with React and SQL.
+
+# Installation
+First install server packages
+- <bash>npm install</bash>
+    
+Then install client packages
+- <bash>cd client</bash>
+- <bash>npm install</bash>
+
+# Usage
+Server start;
+
+- <bash>npm start</bash>
+
+Client start;
+
+- <bash>npm start</bash>
+
+# Check List
 
 - [X] Authentication with JWT 
 - [X] Add data to specific category
