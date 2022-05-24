@@ -13,6 +13,8 @@ import {UserContext} from './hooks/UserContext';
 import useFindUser from "./hooks/useFindUser";
 import PrivateRoute from "./components/PrivateRoute";
 
+
+
 function App() {
 
   const {user, setUser} = useFindUser();
@@ -43,6 +45,7 @@ function App() {
             <Route path = "/personal" element={<PrivateRoute><Listpersonal /></PrivateRoute>} />
             <Route path = "/edit-personal/:id" element={<PrivateRoute><Update /></PrivateRoute>} />
             <Route path="/edit/:team/:id" element={<PrivateRoute><Updateteam /></PrivateRoute>} />
+           
           </Routes>
         </UserContext.Provider>
       </Router>

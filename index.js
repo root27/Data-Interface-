@@ -7,8 +7,8 @@ const {PDFDocument} = require('pdf-lib');
 const cookieparser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrpt = require('bcrypt');
-
-
+const QRCode = require('qrcode');
+const {createCanvas, loadImage} = require('canvas');
 
 
 require('dotenv').config();
@@ -273,7 +273,7 @@ app.post("/add-teamname", (req,res) => {
 
 
 
-app.post("/add-personal", (req,res) => {
+app.post("/add-personal", async(req,res) => {
         
             
             const genes = req.body.genes;
@@ -281,27 +281,55 @@ app.post("/add-personal", (req,res) => {
             const id = req.body.id;
             const country = req.body.country;
             
+           
             
             const query = "INSERT INTO personal (Status,genes,id,country) VALUES ('" +status+ "','" + JSON.stringify(genes) + "','" +id+ "','" +country+ "' ) ;"
             connection.query(query, (err, rows, fields) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    res.status(200).send('Success');
+
+                    res.send('Success');
                 }
-            });   
+            });
             
-        
+                const data = id
+                const canvas = createCanvas(200, 200);
+                const imgDim = {width: 30, height: 30};
+
+                QRCode.toCanvas(canvas, data);
+
+
+                const ctx = canvas.getContext("2d");
+                const img = await loadImage("newikon.png");
+                ctx.drawImage(img, 
+                    canvas.width/2 - imgDim.width/2,
+                    canvas.height/2 - imgDim.height/2,
+                    imgDim.width,
+                    imgDim.height);
+
+                const url = canvas.toDataURL("image/png");
+                const query2 = "UPDATE personal SET qr = '" +url+ "' WHERE id = '" +id+ "'";
+                connection.query(query2, (err, rows, fields) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("Success");
+                    }
+                });
+            
         
 })
 
+
+
 app.delete("/delete-personal/:id", (req,res) => {
     connection.query("DELETE FROM personal WHERE id = ? ", [req.params.id] ,(err, rows, fields) => {
-        path = "./reports/personal_" + req.params.id + ".pdf";
+       const path = "./reports/personal_" + req.params.id + ".pdf";
 
         if (!err && path) {
             res.send(rows);
-            fs.unlinkSync(path);
+            
         } else {
             console.log(err);
         }

@@ -149,12 +149,13 @@ const Update = () => {
                 <Form.Item
                     label="mct1"
                     name="mct1"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="AA">AA</Select.Option>
                         <Select.Option value="AT">AT</Select.Option>
                         <Select.Option value="TT">TT</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
@@ -166,73 +167,80 @@ const Update = () => {
                         <Select.Option value="DD">DD</Select.Option>
                         <Select.Option value="ID">ID</Select.Option>
                         <Select.Option value="II">II</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
 
                 </Form.Item>
                 <Form.Item
                     label="ppargc1a"
                     name="ppargc1a"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                   
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="AA">AA</Select.Option>
                         <Select.Option value="AG">AG</Select.Option>
                         <Select.Option value="GG">GG</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="ppara"
                     name="ppara"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                   
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="CC">CC</Select.Option>
                         <Select.Option value="CG">CG</Select.Option>
                         <Select.Option value="GG">GG</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="actn3"
                     name="actn3"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="RR">RR</Select.Option>
                         <Select.Option value="RX">RX</Select.Option>
                         <Select.Option value="XX">XX</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="nos3"
                     name="nos3"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="TT">TT</Select.Option>
                         <Select.Option value="CT">CT</Select.Option>
                         <Select.Option value="CC">CC</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="il6"
                     name="il6"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="CC">CC</Select.Option>
                         <Select.Option value="GC">GC</Select.Option>
                         <Select.Option value="GG">GG</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="bdnf"
                     name="bdnf"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="GG">GG</Select.Option>
                         <Select.Option value="AG">AG</Select.Option>
                         <Select.Option value="AA">AA</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
@@ -244,61 +252,67 @@ const Update = () => {
                         <Select.Option value="-18">-18</Select.Option>
                         <Select.Option value="0">0</Select.Option>
                         <Select.Option value="18">18</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="col5a1"
                     name="col5a1"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="CC">CC</Select.Option>
                         <Select.Option value="CT">CT</Select.Option>
                         <Select.Option value="TT">TT</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="adrb2"
                     name="adrb2"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="AA">AA</Select.Option>
                         <Select.Option value="GG">GG</Select.Option>
                         <Select.Option value="AG">AG</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="col1a1"
                     name="col1a1"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="GG">GG</Select.Option>
                         <Select.Option value="GT">GT</Select.Option>
                         <Select.Option value="TT">TT</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="comt"
                     name="comt"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                   
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="AA">AA</Select.Option>
                         <Select.Option value="AG">AG</Select.Option>
                         <Select.Option value="GG">GG</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     label="hif1a"
                     name="hif1a"
-                    rules={[{ required: true, message: 'Please input gene name' }]}
+                    
                 >
                     <Select placeholder="Select a value">
                         <Select.Option value="CC">CC</Select.Option>
                         <Select.Option value="CT">CT</Select.Option>
                         <Select.Option value="TT">TT</Select.Option>
+                        <Select.Option value="" >Yok</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item label="Status" name="Status">

@@ -35,7 +35,7 @@ const Listpersonal = () => {
 
     
     const [data, setData] = React.useState([]);
-    
+    const [qr, setQR] = React.useState([]);
       
     const {Column} = Table;
 
@@ -45,12 +45,18 @@ const Listpersonal = () => {
         
         const result = axios.get("/personal");
         result.then(res => {
-            
+            console.log(res.data)
             setData(res.data);
             
         })
     
   }, []);
+
+  
+    
+
+
+
 
   const datatable = data.map(item => {
 
@@ -74,6 +80,7 @@ const Listpersonal = () => {
             "comt": item.genes.comt,
             "hif1a": item.genes.hif1a,
           "Status" : item.Status,
+          "qr" : item.qr,
           
           }
     )
@@ -154,6 +161,14 @@ const Listpersonal = () => {
                             }>
                                 Create Report
                             </Button>
+                        </Space>
+                    )} />
+                    <Column title="QR" key = "qr" align="center" render={(text, record) => (
+                        
+                        <Space size="middle">
+                            
+                            <a href={record.qr} rel={"noopener noreferrer"} target={"_blank"}><img  src={record.qr}  alt="qr" /></a> 
+                           
                         </Space>
                     )} />
 
