@@ -7,9 +7,8 @@ const {PDFDocument} = require('pdf-lib');
 const cookieparser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrpt = require('bcrypt');
-const QRCode = require('qrcode');
-const {createCanvas, loadImage} = require('canvas');
-
+const {createCanvas} = require('canvas');
+const JsBarcode = require('jsbarcode');
 
 require('dotenv').config();
 
@@ -17,7 +16,6 @@ require('dotenv').config();
 const {power, endurance, injury, oxygen, motor} = require("./genedata")
 
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
-const { path } = require("express/lib/application");
 
 
 
@@ -294,29 +292,31 @@ app.post("/add-personal", async(req,res) => {
             });
             
                 const data = id
-                const canvas = createCanvas(200, 200);
-                const imgDim = {width: 30, height: 30};
-
-                QRCode.toCanvas(canvas, data);
-
-
-                const ctx = canvas.getContext("2d");
-                const img = await loadImage("newikon.png");
-                ctx.drawImage(img, 
-                    canvas.width/2 - imgDim.width/2,
-                    canvas.height/2 - imgDim.height/2,
-                    imgDim.width,
-                    imgDim.height);
-
-                const url = canvas.toDataURL("image/png");
-                const query2 = "UPDATE personal SET qr = '" +url+ "' WHERE id = '" +id+ "'";
-                connection.query(query2, (err, rows, fields) => {
+                var canvas = createCanvas(); 
+                
+                JsBarcode(canvas, data, {
+                    format: "CODE128",
+                    displayValue: true,
+                    textAlign: "center",
+                    height: 20,
+                    width: 1,
+                    margin: 0,
+                    fontSize: 10,
+                    background: "#ffffff",
+                    lineColor: "#1E74F6",
+                
+                });
+                const base64 = canvas.toDataURL("image/png");
+                const query2 = "UPDATE personal SET qr = '" +base64+ "' WHERE id = ?";
+                connection.query(query2, [id], (err, rows, fields) => {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("Success");
+                        console.log('Success');
                     }
                 });
+
+               
             
         
 })
@@ -368,14 +368,14 @@ app.get("/create-personal-report/:id", (req,res) => {
             const data_pages = [];
             const filtered = [];
             
-            var p = 0;
-            var e = 0;
-            var o = 0;
-            var m = 0;
-            var i = 0;
+            let p = 0;
+            let e = 0;
+            let o = 0;
+            let m = 0;
+            let i = 0;
 
 
-            fs.readdir("./pdf", (err,files) => {
+             fs.readdir("./pdf", (err,files) => {
                 if (err) {
                     console.log(err);
                 }
@@ -454,7 +454,7 @@ app.get("/create-personal-report/:id", (req,res) => {
                           'Dayanıklılık Eğilimi',
                           'Sakatlanma Riski',
                           'Oksijen Kapasitesi',
-                            'Motor Becerisi'
+                          'Motor Becerisi'
                         ],
                         datasets: [{
                           label : "Sonucunuz",
@@ -514,17 +514,149 @@ app.get("/create-personal-report/:id", (req,res) => {
 
                         async function createradar () {
                             const image = await chartJSNodeCanvas.renderToBuffer(config);
-                            fs.writeFileSync("reports/test.png", image, 'base64', (err) => {
+                           return  fs.writeFileSync("./reports/test.png", image, 'base64', (err) => {
                                 if (err) {
                                     console.log(err);
                                 }
                             })
                         }
                         
+                        async function edittgs (path,p,e,o,m,i) {
+                            const page = await PDFDocument.load(fs.readFileSync(path));
+                            const doc = await PDFDocument.create();
+                            const [content] = await doc.copyPages(page,[0]);
+                            const main = doc.addPage(content);
+                
+                            const img = fs.readFileSync("./icons/newikon.png");
+                            const image = await doc.embedPng(img);
+                            
+                            const { width, height } = image.scale(0.02);
+                            console.log(main.getSize());
+                            // bar max 300
+                            //bar min 40
+                            // power bar height- 187
+                            //injury bar height 244.5
+                            //oxygen bar height 300.5
+                            // motor bar height 357.5
+                            // endurance bar height 414.5
+                
+                
+                            console.log(p*100/12, e*100/12, i*100/8, o*100/4, m*100/4);
+                            // endurance
+                            main.drawImage(image, {
+                                x: 40 + ((e*100/12)*260/100),
+                                y: main.getHeight() - 410.5,
+                                width: width,
+                                height: height,
+                                opacity: 0.9
+                            });
+                
+                            //motor
+                            main.drawImage(image, {
+                                x: 40 + ((m*100/4)*260/100),
+                                y: main.getHeight() - 354.5,
+                                width: width,
+                                height: height,
+                                opacity: 0.9
+                            });
+                
+                            //oxygen
+                            main.drawImage(image, {
+                                x: 40 + ((o*100/4)*260/100),
+                                y: main.getHeight() - 297.5,
+                                width: width,
+                                height: height,
+                                opacity: 0.9
+                            });
+                
+                            //injury
+                            main.drawImage(image, {
+                                x: 40 + ((i*100/8)*260/100),
+                                y: main.getHeight() - 241.5,
+                                width: width,
+                                height: height,
+                                opacity: 0.9
+                            });
+                
+                            //power
+                            main.drawImage(image, {
+                                x: 40 + ((p*100/12)*260/100),
+                                y: main.getHeight() - 184.5,
+                                width: width,
+                                height: height,
+                                opacity: 0.9
+                            });
+                
+                
+                
+                            
+                            return fs.writeFileSync("./dummy_pdf/05.pdf", await doc.save());
+                        }
+                
+                 
+                         async function readeditpdf (path) {
+                             const page = await PDFDocument.load(fs.readFileSync(path));
+                                const doc = await PDFDocument.create();
+                                const [content] = await doc.copyPages(page, [0]);
+                                const main = doc.addPage(content);
+                
+                             const img = fs.readFileSync("./reports/test.png");
+                             
+                            const image = await doc.embedPng(img);
+                            // const { width, height } = image.scaleToFit(130, 130);
+                            const { width, height } = image.scale(1);
+                                main.drawImage(image,{
+                                    // x : main.getWidth()/5 - width/2,
+                                     // y: main.getHeight()/3 - height/2,
+                                        x : main.getWidth()/2 - width/2,
+                                        y: main.getHeight()/2 - height/2,
+                                        width: width,
+                                        height: height,
+                                       
+                                    } );
+                                
+                             
+                             
+                                
+                                
+                            return fs.writeFileSync("./dummy_pdf/04.pdf", await doc.save());
+                                               
+                             
+                         }
+                
+                
+                
+                
+                            async function generatePdf  (pages){
+                                const doc = await PDFDocument.create();
+                        
+                                for (const page of pages) {
+                                    
+                                    const sayfa = await PDFDocument.load(fs.readFileSync('./pdf/'+page));
+                                    const [content] = await doc.copyPages(sayfa, [0]);
+                        
+                                    doc.addPage(content);
+                                
+                                
+                                };
+                
+                                const sayfa2 = await PDFDocument.load(fs.readFileSync("./dummy_pdf/04.pdf"));
+                                const [content2] = await doc.copyPages(sayfa2, [0]);
+                                doc.insertPage(3, content2);
+                
+                                const sayfa3 = await PDFDocument.load(fs.readFileSync("./dummy_pdf/05.pdf"));
+                                const [content3] = await doc.copyPages(sayfa3, [0]);
+                                doc.insertPage(4, content3);
+                
+                               
+                                return fs.writeFileSync('./reports/personal_'+req.params.id+'.pdf', await doc.save());
+                                
+                            };
+                
                         
 
-                         createradar().then(() => readeditpdf("./pdf/04_tendency_page.pdf")) 
-                         edittgs("./pdf/05_tgs_page.pdf", p,e,o,m,i);
+                          createradar().then(() => readeditpdf("./pdf/04_tendency_page.pdf")).then(() => 
+                            edittgs("./pdf/05_tgs_page.pdf", p,e,o,m,i));
                          
                         
                       
@@ -538,16 +670,16 @@ app.get("/create-personal-report/:id", (req,res) => {
                     }
                 });
 
-                const result = data_pages.concat(filtered);
+                const result = data_pages.concat(filtered).sort();
                 
-                result.sort()
+                setTimeout(() => generatePdf(result).then(() => {
+                    
+                        res.send("Success");
+                    }).catch(err => {
+                        res.send("Error");
+                    }),1000);
                 
-                generatePdf(result).then(() => {
-                    res.send('Success');
-                }
-                ).catch(err => {
-                    console.log(err);
-                });
+               
 
 
                 }
@@ -557,138 +689,7 @@ app.get("/create-personal-report/:id", (req,res) => {
     });
 
 
-        async function edittgs (path,p,e,o,m,i) {
-            const page = await PDFDocument.load(fs.readFileSync(path));
-            const doc = await PDFDocument.create();
-            const [content] = await doc.copyPages(page,[0]);
-            const main = doc.addPage(content);
-
-            const img = fs.readFileSync("./icons/newikon.png");
-            const image = await doc.embedPng(img);
-            
-            const { width, height } = image.scale(0.02);
-            console.log(main.getSize());
-            // bar max 300
-            //bar min 40
-            // power bar height- 187
-            //injury bar height 244.5
-            //oxygen bar height 300.5
-            // motor bar height 357.5
-            // endurance bar height 414.5
-
-
-            console.log(p*100/12, e*100/12, i*100/8, o*100/4, m*100/4);
-            // endurance
-            main.drawImage(image, {
-                x: 40 + ((e*100/12)*260/100),
-                y: main.getHeight() - 410.5,
-                width: width,
-                height: height,
-                opacity: 0.9
-            });
-
-            //motor
-            main.drawImage(image, {
-                x: 40 + ((m*100/4)*260/100),
-                y: main.getHeight() - 354.5,
-                width: width,
-                height: height,
-                opacity: 0.9
-            });
-
-            //oxygen
-            main.drawImage(image, {
-                x: 40 + ((o*100/4)*260/100),
-                y: main.getHeight() - 297.5,
-                width: width,
-                height: height,
-                opacity: 0.9
-            });
-
-            //injury
-            main.drawImage(image, {
-                x: 40 + ((i*100/8)*260/100),
-                y: main.getHeight() - 241.5,
-                width: width,
-                height: height,
-                opacity: 0.9
-            });
-
-            //power
-            main.drawImage(image, {
-                x: 40 + ((p*100/12)*260/100),
-                y: main.getHeight() - 184.5,
-                width: width,
-                height: height,
-                opacity: 0.9
-            });
-
-
-
-            const pdfbytes = await doc.save();
-            fs.writeFileSync("./dummy_pdf/05.pdf", pdfbytes);
-        }
-
- 
-         async function readeditpdf (path) {
-             const page = await PDFDocument.load(fs.readFileSync(path));
-                const doc = await PDFDocument.create();
-                const [content] = await doc.copyPages(page, [0]);
-                const main = doc.addPage(content);
-
-             const img = fs.readFileSync("./reports/test.png");
-             
-            const image = await doc.embedPng(img);
-            // const { width, height } = image.scaleToFit(130, 130);
-            const { width, height } = image.scale(1);
-                main.drawImage(image,{
-                    // x : main.getWidth()/5 - width/2,
-                     // y: main.getHeight()/3 - height/2,
-                        x : main.getWidth()/2 - width/2,
-                        y: main.getHeight()/2 - height/2,
-                        width: width,
-                        height: height,
-                       
-                    } );
-                
-             
-             
-                const pdfBytes = await doc.save();
-                
-            fs.writeFileSync("./dummy_pdf/04.pdf", pdfBytes);
-                               
-             
-         }
-
-
-
-
-            async function generatePdf  (pages){
-                const doc = await PDFDocument.create();
         
-                for (const page of pages) {
-                    
-                    const sayfa = await PDFDocument.load(fs.readFileSync('./pdf/'+page));
-                    const [content] = await doc.copyPages(sayfa, [0]);
-        
-                    doc.addPage(content);
-                
-                
-                };
-
-                const sayfa2 = await PDFDocument.load(fs.readFileSync('./dummy_pdf/04.pdf'));
-                const [content2] = await doc.copyPages(sayfa2, [0]);
-                doc.insertPage(3, content2);
-
-                const sayfa3 = await PDFDocument.load(fs.readFileSync("./dummy_pdf/05.pdf"));
-                const [content3] = await doc.copyPages(sayfa3, [0]);
-                doc.insertPage(4, content3);
-
-               
-                fs.writeFileSync('./reports/personal_'+req.params.id+'.pdf', await doc.save());
-                
-            };
-
 
 });
 

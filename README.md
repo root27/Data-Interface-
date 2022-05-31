@@ -37,4 +37,4 @@ Client start;
 - [X] Delete added
 - [X] Report generation
 - [ ] Report generation in English
-- [X] Add QR Code section 
+- [X] Add Barcode section 
