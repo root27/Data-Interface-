@@ -196,10 +196,10 @@ app.post("/update-personal/:id",(req,res)=>{
     const genes = req.body.genes;
     const status = req.body.Status;
     const country = req.body.country;
-   
-    
+    const sport_type = req.body.sport_type;
+    const username = req.body.username;
 
-    connection.query("UPDATE personal SET Status = '" +status+ "' ,genes = '" +JSON.stringify(genes)+ "',country='" +country+ "'  WHERE id = ? ", [req.params.id] ,(err, rows, fields) => {
+    connection.query("UPDATE personal SET Status = '" +status+ "' ,genes = '" +JSON.stringify(genes)+ "',country='" +country+ "',sport_type='" +sport_type+ "',username='" +username+ "'  WHERE id = ? ", [req.params.id] ,(err, rows, fields) => {
         if (!err) {
             res.send(rows);
         } else {
@@ -276,12 +276,12 @@ app.post("/add-personal", async(req,res) => {
             
             const genes = req.body.genes;
             const status = req.body.Status;
-            const id = req.body.id;
+            const username = req.body.username;
             const country = req.body.country;
-            
+            const sport_type = req.body.sport_type;
            
             
-            const query = "INSERT INTO personal (Status,genes,id,country) VALUES ('" +status+ "','" + JSON.stringify(genes) + "','" +id+ "','" +country+ "' ) ;"
+            const query = "INSERT INTO personal (Status,genes,username,country,sport_type) VALUES ('" +status+ "','" + JSON.stringify(genes) + "','" +username+ "','" +country+ "','" +sport_type+ "' ) ;"
             connection.query(query, (err, rows, fields) => {
                 if (err) {
                     console.log(err);
@@ -291,7 +291,7 @@ app.post("/add-personal", async(req,res) => {
                 }
             });
             
-                const data = id
+                const data = username
                 var canvas = createCanvas(); 
                 
                 JsBarcode(canvas, data, {
@@ -301,14 +301,14 @@ app.post("/add-personal", async(req,res) => {
                     height: 20,
                     width: 1,
                     margin: 0,
-                    fontSize: 10,
+                    fontSize: 20,
                     background: "#ffffff",
                     lineColor: "#1E74F6",
                 
                 });
                 const base64 = canvas.toDataURL("image/png");
-                const query2 = "UPDATE personal SET qr = '" +base64+ "' WHERE id = ?";
-                connection.query(query2, [id], (err, rows, fields) => {
+                const query2 = "UPDATE personal SET qr = '" +base64+ "' WHERE username = ?";
+                connection.query(query2, [username], (err, rows, fields) => {
                     if (err) {
                         console.log(err);
                     } else {
@@ -327,13 +327,16 @@ app.delete("/delete-personal/:id", (req,res) => {
     connection.query("DELETE FROM personal WHERE id = ? ", [req.params.id] ,(err, rows, fields) => {
        const path = "./reports/personal_" + req.params.id + ".pdf";
 
-        if (!err && path) {
-            res.send(rows);
-            
+         if (fs.existsSync(path)) {
+                fs.unlinkSync(path);
+            }
+        if (!err) {
+            res.send("Success");
         } else {
             console.log(err);
         }
     });
+   
 })
 
 app.delete("/delete/:team/:id", (req,res) => {
@@ -352,11 +355,16 @@ app.delete("/delete/:team/:id", (req,res) => {
 
 app.get("/pdf-personal/:id", (req,res) => {
 
-
-    var file = fs.createReadStream('./reports/personal_'+req.params.id+'.pdf');
-    file.pipe(res);
-
-          
+    try {
+        const id = req.params.id;
+        const path = "./reports/personal_" + id + ".pdf";
+        const file = fs.readFileSync(path);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.send(file);
+    } catch (err) {
+       res.send(err);
+    }
+       
 });
 
 app.get("/create-personal-report/:id", (req,res) => {

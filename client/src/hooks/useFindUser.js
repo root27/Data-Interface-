@@ -9,14 +9,14 @@ export default function useFindUser() {
         async function findUser() {
         await axios.get("/user")
         .then(res => {
-            console.log(res)
+            console.log(res.data.currentUser)
             setUser(res.data.currentUser);
             setLoading(false);
         }).catch(err => {
             console.log(err);
             setLoading(false);
         });
-        }
+        };
         
         findUser();  
     }, []);

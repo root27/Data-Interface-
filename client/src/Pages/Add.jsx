@@ -46,7 +46,7 @@ const Add = () => {
         
         if(values.team === "personal"){
             const data = {
-                "id": values.id,
+                "username": values.username,
                 
                 "genes": {
                     "mct1": values.mct1,
@@ -143,10 +143,12 @@ return(
                     </Select>
                 </Form.Item>
 
+            
+
                 <Form.Item
-                    label="ID"
-                    name="id"
-                    rules={[{ required: true, message: 'Please input ID!' }]}
+                    label="Username"
+                    name="username"
+                    
                 >
                     <Input />
                 </Form.Item>
@@ -166,6 +168,14 @@ return(
 
                     </Select>
                         
+                </Form.Item>
+
+                <Form.Item
+                    label="Sport Type"
+                    name="sport_type"
+                    
+                >
+                    <Input />
                 </Form.Item>
               
                 <Form.Item

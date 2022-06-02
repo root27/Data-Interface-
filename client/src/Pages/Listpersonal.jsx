@@ -22,6 +22,11 @@ function success() {
     });
   }
 
+function deletesuccess() {
+    Modal.success({
+        content: 'Deleted successfully',
+        });
+        }
 
 function error() {
     Modal.error({
@@ -64,7 +69,7 @@ const Listpersonal = () => {
         {
           key: item.id,
           "id": item.id,
-          
+          "username" : item.username,
           "mct1": item.genes.mct1,
             "ace": item.genes.ace,
             "ppargc1a": item.genes.ppargc1a,
@@ -81,6 +86,7 @@ const Listpersonal = () => {
             "hif1a": item.genes.hif1a,
           "Status" : item.Status,
           "qr" : item.qr,
+          "sport_type" : item.sport_type,
           
           }
     )
@@ -98,7 +104,8 @@ const Listpersonal = () => {
         <div className='table-container'>
         <Table dataSource={datatable}>
                     <Column title="ID" dataIndex="id" key="id" />
-                    
+                    <Column title="Username" dataIndex="username" key="username" />
+                    <Column title="Sport Type" dataIndex="sport_type" key="sport_type" />
                     
                         <Column title="MCT1" dataIndex="mct1" key="mct1" align="center" />
                        {/* <Column title="ACE" dataIndex="ace" key="ace" align="center" />*/}
@@ -121,7 +128,8 @@ const Listpersonal = () => {
                             
                             <Button type="danger" onClick={() => {
                                 axios.delete(`/delete-personal/${record.id}`)
-                                .then(() => {
+                                .then(res => {
+                                    res.data === "Success" ? deletesuccess() : error();
                                     setData(data.filter(item => item.id !== record.id))
                                 })
                             } }>Delete</Button>
@@ -132,6 +140,7 @@ const Listpersonal = () => {
                                     }
                                     )
                                     .then(res => {
+                                        
                                         const file = new Blob([res.data], {type: 'application/pdf'});
                                         const fileURL = URL.createObjectURL(file);
                                         window.open(fileURL);

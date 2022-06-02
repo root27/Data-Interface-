@@ -24,8 +24,9 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
-        <UserContext.Provider value={{user, setUser}}>
+      <UserContext.Provider value={{user, setUser}}>
+        <Router>
+        
           <Routes>
             <Route path="/login" element={<Login />} />
             
@@ -47,8 +48,9 @@ function App() {
             <Route path="/edit/:team/:id" element={<PrivateRoute><Updateteam /></PrivateRoute>} />
            
           </Routes>
-        </UserContext.Provider>
+        
       </Router>
+      </UserContext.Provider>
      
     </div>
 

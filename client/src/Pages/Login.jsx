@@ -1,15 +1,30 @@
-import React from 'react'
+import React, { useEffect,useContext } from 'react'
 import {Button, Form, Input, Modal} from 'antd';
 import logo from "../UniqgeneLogo.png"
 import "./Login.css"
 import useAuth from "../hooks/useAuth";
-
+import { UserContext } from './../hooks/UserContext';
+import { useNavigate } from "react-router-dom";
 
 
 function Login() {
 
+    const navigate = useNavigate();
 
     const {loginUser} = useAuth();
+    const {user} = useContext(UserContext);
+
+  useEffect(() => {
+    if(user){
+      navigate("/");
+    }
+  }, [user]);
+
+
+
+
+
+
 
 
     const onFinish = async(values) => {

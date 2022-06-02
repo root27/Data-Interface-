@@ -35,13 +35,16 @@ const Update = () => {
 
 
     useEffect(() => {
-        const path = generatePath("/get-personal/:id", { id: location.pathname.split("/")[2] });
+        const path = generatePath("/get-personal/:id", { id: location.pathname.split("/")[2]});
+        
         const result =  axios.get(path);
+        
         result.then(res => {
             res.data.map(item => {
                 return (
                 form.setFieldsValue({
                     "id": item.id,
+                    "username": item.username,
                     "mct1": item.genes.mct1,
                     "ace": item.genes.ace,
                     "ppargc1a": item.genes.ppargc1a,
@@ -57,7 +60,8 @@ const Update = () => {
                     "comt": item.genes.comt,
                     "hif1a": item.genes.hif1a,
                     "Status": item.Status,
-                    "country": item.country
+                    "country": item.country,
+                    "sport_type": item.sport_type
         
                 })
                 )
@@ -89,7 +93,9 @@ const Update = () => {
                 
             },
             "Status": values.Status,
-            "country" : values.country
+            "country" : values.country,
+            "sport_type": values.sport_type,
+            "username": values.username
 
         }
         
@@ -130,10 +136,19 @@ const Update = () => {
                 >
                 <Input disabled/>
                 </Form.Item>
+
+                <Form.Item
+                label="Username"
+                name="username"
+                
+                >
+                <Input />
+                </Form.Item>
+
                 <Form.Item
                     label="Country"
                     name="country"
-                    rules={[{ required: true, message: 'Please input country!' }]}
+                    
                 >
                     
                     <Select placeholder="Please select a country">
@@ -144,6 +159,14 @@ const Update = () => {
                         })}
                     </Select>
                         
+                </Form.Item>
+
+                <Form.Item
+                label="Sport Type"
+                name="sport_type"
+                
+                >
+                <Input />
                 </Form.Item>
               
                 <Form.Item
